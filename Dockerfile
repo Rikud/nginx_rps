@@ -6,20 +6,19 @@ MAINTAINER Ivan Nemshilov
 RUN apt-get -y update
 
 # install nginx
-RUN apt-get install -y python-software-properties
-RUN apt-get install -y software-properties-common
-RUN add-apt-repository -y ppa:nginx/stable
-RUN apt-get update -y
+RUN apt-get update
 RUN apt-get install -y nginx
-# deamon mode off
-RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
-RUN chown -R www-data:www-data /var/lib/nginx
-# volume
-VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/var/log/nginx"]
-# expose ports
-EXPOSE 80 443
+# Remove the default Nginx configuration file
+RUN rm -v /etc/nginx/nginx.conf
+# Copy a configuration file from the current directory
+ADD nginx.conf /etc/nginx/
 # add nginx conf
 ADD config/default.conf /etc/nginx/conf.d/default.conf
-ADD config/nginx_status.conf /etc/nginx-sp/vhosts.d/APPNAME.d/nginx_status.conf
+# Append "daemon off;" to the beginning of the configuration
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+# Expose ports
+EXPOSE 80
+# Set the default command to execute
+# when creating a new container
 WORKDIR /etc/nginx
 CMD ["nginx"]
