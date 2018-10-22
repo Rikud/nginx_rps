@@ -12,7 +12,6 @@ RUN add-apt-repository -y ppa:nginx/stable
 RUN apt-get update -y
 RUN apt-get install -y nginx
 # deamon mode off
-RUN grep -o with-http_stub_status_module
 RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/lib/nginx
 # volume
